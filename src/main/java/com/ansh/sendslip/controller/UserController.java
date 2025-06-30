@@ -9,7 +9,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
@@ -29,5 +28,9 @@ public class UserController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+    @GetMapping("/check")
+    public String check(){
+        return "server_running";
     }
 }
