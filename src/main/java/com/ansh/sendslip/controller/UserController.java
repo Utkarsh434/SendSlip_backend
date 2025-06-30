@@ -24,10 +24,17 @@ public class UserController {
             System.out.println("Length auth name: " + authentication.getName().length());
             System.out.println("Length clerkId: " + user.getClerkId().length());
             System.out.println("Equal result: " + authentication.getName().equals(user.getClerkId()));
-
-            if (!(authentication.getName().equals(user.getClerkId()))) {
+            String authname =authentication.getName();
+            String username = user.getClerkId();
+            if(authname.length()!=username.length()){
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN,
                         "User does not have permission to access this resource");
+            }
+            for(int i =0 ; i<authname.length() ; i++){
+                if(authname.charAt(i)!=username.charAt(i)){
+                    throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                            "User does not have permission to access this resource");
+                }
             }
             return userService.saveOrUpdateUser(user);
         } catch (Exception e) {
