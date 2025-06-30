@@ -31,6 +31,7 @@ public class UserController {
             }
             return userService.saveOrUpdateUser(user);
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
