@@ -20,8 +20,12 @@ public class UserController {
     @PostMapping
     public User createOrUpdateUser(@RequestBody User user, Authentication authentication) {
         try {
-            System.out.println(authentication.getName()+" GAP "+user.getClerkId());
-            if (!authentication.getName().equals(user.getClerkId())) {
+            System.out.println("[" + authentication.getName() + "] GAP [" + user.getClerkId() + "]");
+            System.out.println("Length auth name: " + authentication.getName().length());
+            System.out.println("Length clerkId: " + user.getClerkId().length());
+            System.out.println("Equal result: " + authentication.getName().equals(user.getClerkId()));
+
+            if (!(authentication.getName().equals(user.getClerkId()))) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN,
                         "User does not have permission to access this resource");
             }
