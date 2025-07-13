@@ -1,5 +1,6 @@
 package com.ansh.sendslip.config;
 
+
 import com.ansh.sendslip.security.ClerkJwtAuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -12,7 +13,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
@@ -23,16 +23,18 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+
     private final ClerkJwtAuthFilter jwtAuthFilter;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
-        httpSecurity.cors(Customizer.withDefaults())
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+        http.cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth->auth.requestMatchers("/api/webhooks/**").permitAll().anyRequest().authenticated())
-                .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth ->
+                        auth.requestMatchers("/api/webhooks/**").permitAll().anyRequest().authenticated())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-        return httpSecurity.build();
+        return http.build();
     }
 
     @Bean
@@ -42,12 +44,8 @@ public class SecurityConfig {
 
     private UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-//        config.setAllowedOrigins(List.of("http://localhost:5173","https://capable-lolly-9f9ed1.netlify.app"));
-        config.setAllowedOrigins(List.of("https://splendid-dolphin-ff231a.netlify.app"));
-//        config.setAllowedOrigins(List.of("http://localhost:5173"));
-
+        config.setAllowedOrigins(List.of("http://localhost:5173"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-
         config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         config.setAllowCredentials(true);
 
@@ -55,6 +53,4 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", config);
         return source;
     }
-
-
 }

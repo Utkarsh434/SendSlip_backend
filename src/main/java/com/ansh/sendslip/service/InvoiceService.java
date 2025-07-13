@@ -24,7 +24,7 @@ public class InvoiceService {
     }
 
     public void removeInvoice(String invoiceId , String clerkId){
-        Invoice existingInvoice = invoiceRepository.findByClerkIdAndId(invoiceId,clerkId)
+        Invoice existingInvoice = invoiceRepository.findByClerkIdAndId(clerkId,invoiceId)
                 .orElseThrow(()->new RuntimeException("Invoice not found "+invoiceId));
         invoiceRepository.delete(existingInvoice);
     }

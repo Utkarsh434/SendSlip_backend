@@ -23,29 +23,34 @@ public class ClerkWebhookController {
     private final UserService userService;
 
     @PostMapping("/clerk")
-    public ResponseEntity<?> handleClerkWebhook(@RequestHeader("svix-id") String svixId ,
+    public ResponseEntity<?> handleClerkWebhook(@RequestHeader("svix-id") String svixId,
                                                 @RequestHeader("svix-timestamp") String svixTimestamp,
                                                 @RequestHeader("svix-signature") String svixSignature,
                                                 @RequestBody String payload) {
-        try{
-            verifyWebhookSignature(svixId,svixTimestamp,svixSignature,payload);
-            ObjectMapper mapper  = new ObjectMapper();
-            JsonNode rootNode = mapper.readTree(payload);
+        try {
+            verifyWebhookSignature(svixId, svixTimestamp, svixSignature, payload);
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(payload);
 
             String eventType = rootNode.path("type").asText();
-            switch (eventType){
+
+            switch (eventType) {
                 case "user.created":
                     handleUserCreated(rootNode.path("data"));
+                    break;
                 case "user.updated":
                     handleUserUpdated(rootNode.path("data"));
+                    break;
                 case "user.deleted":
                     handleUserDeleted(rootNode.path("data"));
                     break;
             }
             return ResponseEntity.ok().build();
-        }catch (Exception e){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
+
     }
 
     private void handleUserDeleted(JsonNode data) {
@@ -75,6 +80,7 @@ public class ClerkWebhookController {
                 .build();
         userService.saveOrUpdateUser(newUser);
     }
+
     private boolean verifyWebhookSignature(String svixId, String svixTimestamp, String svixSignature, String payload) {
         return true;
     }

@@ -14,31 +14,30 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
-@CrossOrigin(origins = "*") // for frontend access
+
 @RestController
-@RequestMapping("/api/invoices")
 @RequiredArgsConstructor
+@RequestMapping("/api/invoices")
 public class InvoiceController {
 
-    private final InvoiceService service;
+    private final InvoiceService invoiceService;
     private final EmailService emailService;
 
     @PostMapping
     public ResponseEntity<Invoice> saveInvoice(@RequestBody Invoice invoice) {
-        return ResponseEntity.ok(service.saveInvoice(invoice));
+        return ResponseEntity.ok(invoiceService.saveInvoice(invoice));
     }
 
 
     @GetMapping
     public ResponseEntity<List<Invoice>> fetchInvoices(Authentication authentication) {
-        System.out.println(authentication.getName());
-        return ResponseEntity.ok(service.fetchInvoices(authentication.getName()));
+        return ResponseEntity.ok(invoiceService.fetchInvoices(authentication.getName()));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> removeInvoice(@PathVariable String id, Authentication authentication) {
         if (authentication.getName() != null) {
-            service.removeInvoice(authentication.getName(), id);
+            invoiceService.removeInvoice(id,authentication.getName());
             return ResponseEntity.noContent().build();
         }
         throw new ResponseStatusException(HttpStatus.FORBIDDEN,
